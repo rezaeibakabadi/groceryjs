@@ -14,6 +14,8 @@ let editId = "";
 
 // ****** EVENT LISTENERS **********
 form.addEventListener("submit",addItem);
+// clear btn
+clearBtn.addEventListener('click',clearItems);
 // ****** FUNCTIONS **********
 function addItem(e){
     e.preventDefault();
@@ -21,7 +23,35 @@ function addItem(e){
     const id = new Date().getTime().toString();
 
 if( value && !editFlag ){
-    console.log('add item to the list')
+const element = document.createElement('article');
+// add class
+element.classList.add('grocery-item')
+// add atrr
+const attr = document.createAttribute('data-id')
+attr.value = id;
+element.setAttributeNode(attr);
+element.innerHTML = `
+<p class="title">${value}</p>
+<div class="btn-container">
+  <button class="edit-btn" type="button">
+    <i class="fas fa-edit"></i>
+  </button>
+  <button class="delete-btn" type="button">
+    <i class="fas fa-trash"></i>
+  </button>
+</div>
+`
+// append list
+list.appendChild(element);
+// display alert 
+alertDisplay('item added to the list','success');
+// show container
+container.classList.add('show-container')
+// add to local storage
+addToLocalStorage(id , value);
+// set back to default
+setBackToDefault();
+
 }else if( value  && editFlag){
     console.log('editing')
 }else{
@@ -38,8 +68,30 @@ function alertDisplay(text, action){
     setTimeout(function(){
     alert.textContent = '';
     alert.classList.remove(`alert-${action}`);
-    },3000)
+    },2500)
+}
+
+function setBackToDefault(){
+    grocery.value = '';
+    editFlag = false;
+    editId = "";
+    submitBtn.textContent = `submit`
+}
+// clear items
+function clearItems(){
+    const items = document.querySelectorAll('.grocery-item');
+    if(items.length > 0){
+        items.forEach(function(item){
+            list.removeChild(item)
+        })
+    }
+    container.classList.remove('show-container');
+    alertDisplay('empty list','danger');
+    setBackToDefault();
+    // localStorage.removeItem('list');
 }
 // ****** LOCAL STORAGE **********
-
+function addToLocalStorage(id , value){
+    console.log('added to local storage')
+}
 // ****** SETUP ITEMS **********
